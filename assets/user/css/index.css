@@ -40,6 +40,12 @@ body {
   position: relative;
 }
 
+/* Global Image Reset */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Overlay for better contrast */
 body::before {
   content: "";
@@ -93,6 +99,13 @@ a {
 
 .nav-icon {
   margin-right: 6px;
+}
+
+.brand-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
 /* Search Input */
@@ -277,6 +290,12 @@ a {
 
 .acg-card:hover .acg-thumb {
   transform: scale(1.05);
+}
+
+.item-cover {
+  width: 100%;
+  object-fit: cover;
+  border-radius: var(--card-radius);
 }
 
 .acg-card .p-3 {
