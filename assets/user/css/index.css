@@ -31,12 +31,11 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
   color: var(--acg-text-main);
-  background-image: url("/assets/admin/images/login/bg.jpg"); /* Keep original bg but can be overridden */
+  background-image: url("/assets/admin/images/login/bg.jpg"); /* Fallback */
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
   min-height: 100vh;
-  /* Add a subtle overlay to ensure text readability better than linear-gradient */
   position: relative;
 }
 
@@ -76,9 +75,10 @@ a {
 
 .navbar-brand span {
   font-weight: 700;
-  background: linear-gradient(135deg, var(--acg-primary), var(--acg-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(135deg, var(--acg-primary), var(--acg-secondary)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important; /* Force override inline styles */
   font-size: 1.5rem;
   letter-spacing: -0.5px;
 }
@@ -235,7 +235,7 @@ a {
   border: 1px solid rgba(0, 0, 0, 0.05);
   font-weight: 600;
   color: var(--acg-text-secondary);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Spring effect */
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   font-size: 0.95rem;
 }
@@ -248,7 +248,7 @@ a {
 }
 
 .chip.is-primary {
-  background: var(--acg-text-main); /* Black pill for selected */
+  background: var(--acg-text-main);
   color: #fff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   border-color: transparent;
@@ -305,6 +305,12 @@ a {
   flex-grow: 1;
 }
 
+.tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .goods-title {
   font-size: 1.15rem;
   font-weight: 700;
@@ -345,6 +351,14 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.stat-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--acg-text-secondary);
+  margin-top: 8px;
 }
 
 .badge-soft {
@@ -403,6 +417,13 @@ a {
 }
 
 /* SKU & Inputs */
+.sku-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .sku {
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
@@ -455,6 +476,36 @@ a {
 
 .price-display {
   text-align: right;
+}
+
+/* Forms */
+.form-control {
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 10px 16px;
+  transition: all 0.2s;
+}
+.form-control:focus {
+  background: #fff;
+  border-color: var(--acg-primary);
+  box-shadow: 0 0 0 4px var(--acg-primary-sub);
+}
+
+.optional-card {
+  width: 100%;
+  padding: 10px 16px;
+  background: #f5f5f7;
+  border: 1px dashed rgba(0,0,0,0.1);
+  border-radius: 12px;
+  color: var(--acg-text-secondary);
+  text-align: left;
+  transition: all 0.2s;
+}
+.optional-card:hover {
+  background: #fff;
+  border-color: var(--acg-primary);
+  color: var(--acg-primary);
 }
 
 /* Payment Methods */
@@ -536,3 +587,39 @@ a {
     font-size: 0.9rem;
   }
 }
+/* Footer */
+footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--acg-text-secondary);
+  font-size: 0.85rem;
+  backdrop-filter: blur(var(--glass-blur));
+  margin-top: auto;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--acg-primary);
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: 8px 24px;
+  box-shadow: 0 4px 12px var(--acg-primary-sub);
+  transition: all 0.2s;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background: #4b6bf5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px var(--acg-primary-sub);
+}
+.btn-outline-secondary {
+  border-radius: var(--btn-radius);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: var(--acg-text-secondary);
+}
+.btn-outline-secondary:hover {
+  background: rgba(0,0,0,0.05);
+  color: var(--acg-text-main);
+  border-color: rgba(0,0,0,0.1);
+}
+
