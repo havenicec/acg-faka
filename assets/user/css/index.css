@@ -461,6 +461,9 @@ a {
   padding: 4px;
   border: none;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  width: 140px;
 }
 
 .qty-group button {
@@ -472,6 +475,31 @@ a {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   color: var(--acg-text-main);
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.qty-group button:hover {
+  background: #fefefe;
+  transform: scale(1.05);
+}
+
+.qty-group button:active {
+  transform: scale(0.95);
+}
+
+.qty-group .form-control {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  height: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-weight: 600;
+  color: var(--acg-text-main);
 }
 
 .price-display {
@@ -479,17 +507,37 @@ a {
 }
 
 /* Forms */
-.form-control {
-  background: #f5f5f7;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  padding: 10px 16px;
-  transition: all 0.2s;
+.form-label {
+  font-weight: 600;
+  color: var(--acg-text-main);
+  margin-bottom: 8px;
+  display: block;
 }
+
+.form-control {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--acg-text-main);
+}
+
+.form-control:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: #fafafa;
+}
+
 .form-control:focus {
   background: #fff;
   border-color: var(--acg-primary);
   box-shadow: 0 0 0 4px var(--acg-primary-sub);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #a1a1a6;
 }
 
 .optional-card {
@@ -552,19 +600,26 @@ a {
 
 /* Captcha */
 .captcha-input {
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-  border-right: none;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: none !important;
 }
 
 .captcha-img {
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  border-left: none;
-  padding: 0;
-  height: 100%;
+  height: 48px !important; /* 与输入框高度一致 */
+  width: 110px;
+  object-fit: cover;
+  border-radius: 0 12px 12px 0 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-left: none !important;
   cursor: pointer;
-  margin-left: 2px;
+  padding: 0;
+  display: block;
+}
+
+/* 移除 Bootstrap 可能添加的背景和内边距 */
+.input-group-append .captcha-img {
+  background: transparent;
 }
 
 /* Responsive */
