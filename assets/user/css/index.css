@@ -565,33 +565,77 @@ a {
 }
 
 .pay-list .pay {
-  border: 1px solid rgba(0, 0, 0, 0.08); /* Minimal border */
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background: #fff;
-  border-radius: 12px;
-  padding: 12px 16px;
+  border-radius: 16px;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
+  gap: 12px;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .pay-list .pay img {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.pay-list .pay span {
+  font-weight: 600;
+  color: var(--acg-text-main);
+  transition: color 0.3s ease;
+}
+
+/* 悬停炫酷动画 */
 .pay-list .pay:hover {
+  transform: translateY(-4px) scale(1.01);
   border-color: var(--acg-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(92, 124, 250, 0.15);
+  box-shadow: 0 12px 24px rgba(92, 124, 250, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
+.pay-list .pay:hover img {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* 点击涟漪感 */
+.pay-list .pay:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s;
+}
+
+/* 选中状态动画 */
 .pay-list .pay.selected,
 .pay-list .pay.active {
   border-color: var(--acg-primary);
-  background: var(--acg-primary-sub);
+  background: linear-gradient(135deg, #fff, var(--acg-primary-sub));
+  box-shadow: 0 8px 20px rgba(92, 124, 250, 0.2);
+}
+
+.pay-list .pay.selected span,
+.pay-list .pay.active span {
   color: var(--acg-primary);
+}
+
+/* 添加一个小勾选标记的动画效果 */
+.pay-list .pay.selected::after,
+.pay-list .pay.active::after {
+  content: '\f00c';
+  font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free";
+  position: absolute;
+  right: 20px;
+  color: var(--acg-primary);
+  font-weight: 900;
+  animation: fadeInRight 0.3s ease forwards;
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .pay-list .pay span {
@@ -650,6 +694,123 @@ footer {
   font-size: 0.85rem;
   backdrop-filter: blur(var(--glass-blur));
   margin-top: auto;
+}
+
+/* Sidebar Layout Enhancement */
+.sidebar-panel {
+  background: linear-gradient(180deg, #20e3b2 0%, #29abe2 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  overflow: hidden;
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-panel .shop-name {
+  color: #fff;
+  font-size: 1.75rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar-panel .btn-primary {
+  background: #fff;
+  color: #29abe2;
+  border: none;
+  font-weight: 700;
+}
+
+.sidebar-panel .btn-primary:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.sidebar-panel .btn-outline-primary,
+.sidebar-panel .btn-outline-danger {
+  border-color: #fff;
+  color: #fff;
+}
+
+.sidebar-panel .btn-outline-primary:hover,
+.sidebar-panel .btn-outline-danger:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.sidebar-panel .text-muted {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+@media (max-width: 991px) {
+  .sidebar-panel {
+    position: static;
+  }
+}
+
+/* Floating Action Bar */
+main.container {
+  position: relative; /* 建立定位基准 */
+}
+
+.floating-action-bar {
+  position: absolute; /* 相对于 main.container 定位 */
+  right: -80px; /* 紧贴容器右侧 (根据宽度调整) */
+  top: 24px; /* 与内容顶部对齐 (对应 py-4 的 1.5rem) */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  padding: 16px 12px;
+  border-radius: 999px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 针对小屏幕优化：如果屏幕宽度不足以容纳悬浮栏，则固定在屏幕边缘或底部 */
+@media (max-width: 1200px) {
+  .floating-action-bar {
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.fab-item {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--acg-text-secondary);
+  font-size: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.fab-item:hover,
+.fab-item.active {
+  background: #fff;
+  color: var(--acg-primary);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(92, 124, 250, 0.25);
+}
+
+@media (max-width: 991px) {
+  .floating-action-bar {
+    top: auto;
+    bottom: 24px;
+    right: 50%;
+    transform: translateX(50%);
+    flex-direction: row;
+    padding: 12px 24px;
+  }
 }
 
 /* Buttons */

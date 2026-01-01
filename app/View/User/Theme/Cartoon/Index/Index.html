@@ -1,35 +1,239 @@
 #{include file="./Header.html"}
-<main class="container py-4">
-  <!-- 公告面板 -->
-  <div class="panel">
-    <div class="panel-header">
-      <span class="icon"><i class="fa-duotone fa-regular fa-bullhorn"></i></span>
-      <h6 class="panel-title">公告</h6>
-    </div>
-    <div class="panel-body">
-        #{$config.notice}
-    </div>
-  </div>
+<main class="container py-5 d-flex justify-content-center">
+    <div class="main-card-layout shadow-lg d-flex w-100 bg-white" style="max-width: 1400px; min-height: 800px; border-radius: 32px; overflow: hidden;">
+        <!-- 左侧边栏 (固定) -->
+        <div class="sidebar-section d-flex flex-column align-items-center justify-content-center text-center p-5" style="width: 380px; min-width: 380px; flex-shrink: 0; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); position: relative; z-index: 1;">
+            
+            <div style="flex-grow: 1;"></div> <!-- 顶部弹簧 -->
 
-  <!-- 购买面板 -->
-  <div class="panel">
-    <div class="panel-header">
-      <span class="icon"><i class="fa-duotone fa-regular fa-cart-shopping"></i></span>
-      <h6 class="panel-title">购买</h6>
-    </div>
-    <div class="panel-body">
-      <div class="mb-3">
-        <div class="chip-list">
-            #{foreach $category as $cate}
-                <a data-id="#{$cate.id}" class="switch-category chip #{if $cate@first && $categoryId == 0} is-primary #{elseif $cate.id == $categoryId} is-primary #{/if}" href="javascript:void(0);">#{if $cate.id != 'recommend'}<span class="chip-icon" style="background: url('#{$cate.icon}') center/cover no-repeat;"></span>#{/if}#{$cate.name}</a>
-            #{/foreach}
+            <div class="shop-logo mb-4 flex-shrink-0 position-relative">
+                <img src="/favicon.ico" alt="Logo" class="rounded-circle shadow-lg" style="width: 140px; height: 140px; object-fit: cover; border: 6px solid rgba(255,255,255,0.4); box-shadow: 0 10px 30px rgba(255, 105, 135, 0.3) !important;">
+                <!-- 萌系装饰：猫耳或其他元素可在此处添加 -->
+            </div>
+            <h3 class="shop-name fw-bold text-white fs-2 flex-shrink-0 mb-5" style="text-shadow: 0 2px 4px rgba(255, 105, 135, 0.3); letter-spacing: 1px;">#{$config.shop_name}</h3>
+            
+            <div class="auth-buttons mb-5 d-flex gap-3 w-100 px-3 justify-content-center flex-shrink-0">
+                #{if $user}
+                    <a href="/user/dashboard/index" class="btn btn-light rounded-pill px-4 fw-bold flex-fill py-2 shadow-sm" style="color: #ff758c;">个人中心</a>
+                    <a href="/user/authentication/logout" class="btn btn-outline-light rounded-pill px-4 fw-bold flex-fill py-2">退出</a>
+                #{else}
+                    <a href="/user/authentication/login" class="btn btn-light rounded-pill px-4 fw-bold flex-fill py-2 shadow-sm" style="color: #ff758c;">登录</a>
+                    <a href="/user/authentication/register" class="btn btn-outline-light rounded-pill px-4 fw-bold flex-fill py-2">注册</a>
+                #{/if}
+            </div>
+
+            <div style="flex-grow: 1;"></div> <!-- 底部弹簧 -->
+
+            <div class="contact-info text-white flex-shrink-0" style="margin-bottom: 20px;">
+                <p class="mb-0 fw-bold fs-6 opacity-90"><i class="fa-brands fa-qq me-2"></i>客服QQ: 710699827</p>
+            </div>
+            
+            <!-- 二次元风格背景装饰 -->
+            <div style="position: absolute; top: -60px; left: -60px; width: 240px; height: 240px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; pointer-events: none;"></div>
+            <div style="position: absolute; bottom: 80px; right: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; pointer-events: none;"></div>
+            <div style="position: absolute; top: 20%; right: 10%; font-size: 24px; color: rgba(255,255,255,0.2); pointer-events: none;"><i class="fa-solid fa-star"></i></div>
+            <div style="position: absolute; bottom: 30%; left: 15%; font-size: 18px; color: rgba(255,255,255,0.15); pointer-events: none;"><i class="fa-solid fa-heart"></i></div>
         </div>
-      </div>
-      <div class="row item-list">
-          <div class="item-message">努力加载中..</div>
-      </div>
+
+        <!-- 右侧内容区 (可切换) -->
+        <div class="content-section flex-grow-1 p-5 bg-white position-relative d-flex flex-column" style="border-radius: 32px 0 0 32px; margin-left: -20px; z-index: 2; box-shadow: -10px 0 30px rgba(0,0,0,0.05); min-height: 800px; width: 100%;">
+            
+            <!-- 视图1: 购买商品 (默认显示) -->
+            <div id="view-purchase" class="content-view h-100 d-flex flex-column">
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-light">
+                    <h2 class="fw-bold mb-0 text-dark">购买<span class="text-primary">商品</span></h2>
+                    <span class="badge bg-primary-subtle text-primary ms-3 rounded-pill px-3 py-2">Store</span>
+                    
+                    <div class="ms-auto" style="width: 350px;">
+                        <div class="d-flex align-items-center gap-2">
+                             <input class="form-control item-search-input" type="search" placeholder="搜索商品.." style="border-radius: 12px; border: 1.5px dashed #a5d8ff; background: transparent; padding: 8px 16px; font-size: 14px; box-shadow: none;">
+                             <button class="btn btn-primary px-4 fw-bold flex-shrink-0" style="border-radius: 8px; background: #00aeec; border: none; box-shadow: 0 4px 12px rgba(0, 174, 236, 0.3); height: 38px;">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 公告 (精简版) -->
+                <div id="announcement-panel">
+                    #{if !empty($config.notice)}
+                    <div class="alert alert-light border-0 shadow-sm mb-4 notice-box rounded-4" role="alert" style="background: #f8faff;">
+                       <div class="d-flex">
+                           <div class="flex-shrink-0">
+                               <i class="fa-duotone fa-regular fa-bullhorn text-primary fs-5 mt-1"></i>
+                           </div>
+                           <div class="flex-grow-1 ms-3 text-muted">
+                               #{$config.notice}
+                           </div>
+                       </div>
+                    </div>
+                    #{/if}
+                </div>
+
+                <!-- 分类选择 -->
+                <div class="mb-4">
+                    <div class="chip-list">
+                        <a data-id="0" class="switch-category chip #{if $categoryId == 0} is-primary #{/if}" href="javascript:void(0);">全部</a>
+                        #{foreach $category as $cate}
+                            <a data-id="#{$cate.id}" class="switch-category chip #{if $cate.id == $categoryId} is-primary #{/if}" href="javascript:void(0);">#{if $cate.id != 'recommend'}<span class="chip-icon" style="background: url('#{$cate.icon}') center/cover no-repeat;"></span>#{/if}#{$cate.name}</a>
+                        #{/foreach}
+                    </div>
+                </div>
+
+                <!-- 商品列表 -->
+                <div class="row item-list g-3 flex-grow-1 align-content-start" id="purchase-panel">
+                    <div class="item-message text-center py-5 text-muted w-100">
+                        <i class="fa-duotone fa-regular fa-spinner-third icon-spin fs-2 mb-3 text-primary"></i>
+                        <p>正在加载精彩商品...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视图2: 订单查询 (默认隐藏) -->
+            <div id="view-query" class="content-view h-100" style="display: none;">
+                <div class="d-flex align-items-center mb-5 pb-3 border-bottom border-light">
+                    <h2 class="fw-bold mb-0 text-dark">查询<span class="text-primary">订单</span></h2>
+                    <span class="badge bg-warning-subtle text-warning ms-3 rounded-pill px-3 py-2">Query</span>
+                </div>
+
+                <div class="query-container py-5 d-flex flex-column align-items-center justify-content-center h-75">
+                    <div class="text-center w-100" style="max-width: 600px;">
+                        <h4 class="mb-4 text-muted fw-normal">请输入您的订单号或联系方式查询</h4>
+                        <form class="order-query-form mb-5">
+                            <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border p-1 bg-white">
+                                <input type="text" class="form-control border-0 ps-4 fs-5" name="keywords" value="#{$tradeNo}" placeholder="订单号 / 联系方式" style="box-shadow: none;">
+                                <button type="button" class="btn btn-primary px-5 fw-bold rounded-pill btn-search-query m-1">查询</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 查询结果容器 (初始为空) -->
+                    <div class="order-results w-100"></div>
+                </div>
+            </div>
+
+            <!-- 视图3: 商品详情 (默认隐藏) -->
+            <div id="view-item" class="content-view h-100" style="display: none;">
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-light">
+                    <button class="btn btn-light rounded-circle me-3" onclick="switchView('purchase')">
+                        <i class="fa-duotone fa-regular fa-arrow-left text-dark"></i>
+                    </button>
+                    <h2 class="fw-bold mb-0 text-dark">商品<span class="text-primary">详情</span></h2>
+                </div>
+                
+                <div id="item-detail-container" class="item-detail-wrapper" style="overflow-y: auto; height: calc(100% - 80px);">
+                    <!-- 内容将通过 AJAX 加载 -->
+                </div>
+            </div>
+
+        </div>
     </div>
-  </div>
+    
+    <!-- 右侧悬浮工具栏 (更新为 JS 控制) -->
+    <div class="floating-action-bar">
+        <a href="javascript:void(0);" onclick="switchView('purchase');" class="fab-item active" id="fab-purchase" data-bs-toggle="tooltip" data-bs-placement="left" title="主页">
+            <i class="fa-duotone fa-regular fa-briefcase"></i>
+        </a>
+        <a href="javascript:void(0);" onclick="switchView('query');" class="fab-item" id="fab-query" data-bs-toggle="tooltip" data-bs-placement="left" title="查询订单">
+            <i class="fa-duotone fa-regular fa-magnifying-glass"></i>
+        </a>
+    </div>
+
 </main>
+
+<script>
+    // 视图切换逻辑
+    function switchView(viewName) {
+        const allViews = document.querySelectorAll('.content-view');
+        
+        // 隐藏所有视图
+        allViews.forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.position = 'absolute';
+            el.style.top = '0';
+            el.style.left = '0';
+            el.style.width = '100%';
+            el.style.zIndex = -1;
+            el.style.pointerEvents = 'none'; // 防止点击
+            setTimeout(() => {
+                if (el.id !== 'view-' + viewName) {
+                     el.style.display = 'none';
+                }
+            }, 300);
+        });
+        
+        // 显示目标视图
+        const targetView = document.getElementById('view-' + viewName);
+        if (targetView) {
+            targetView.style.display = 'block';
+            if (viewName === 'purchase') targetView.classList.add('d-flex'); 
+            
+            // 强制重绘
+            targetView.offsetHeight; 
+            
+            targetView.style.position = 'relative'; // 恢复文档流
+            targetView.style.zIndex = 10;
+            targetView.style.pointerEvents = 'auto';
+            targetView.style.opacity = 1;
+            targetView.style.transform = 'translateY(0)';
+        }
+
+        // 更新悬浮栏状态
+        document.querySelectorAll('.fab-item').forEach(el => el.classList.remove('active'));
+        const activeFab = document.getElementById('fab-' + viewName);
+        if (activeFab) activeFab.classList.add('active');
+        
+        // 如果是查询视图，自动聚焦输入框
+        if (viewName === 'query') {
+            const input = document.querySelector('#view-query input[name="keywords"]');
+            if (input) setTimeout(() => input.focus(), 300);
+        }
+    }
+    
+    // 初始化动画样式
+    document.querySelectorAll('.content-view').forEach(el => {
+        el.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+    });
+
+    // 将函数挂载到 window 对象，确保全局可访问
+    window.openItem = function(id) {
+        // 1. 切换视图
+        switchView('item');
+        
+        const container = document.getElementById('item-detail-container');
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="fa-duotone fa-regular fa-spinner-third icon-spin fs-1 text-primary mb-3"></i>
+                <p class="text-muted">正在加载商品详情...</p>
+            </div>
+        `;
+
+        // 2. AJAX 获取商品详情页
+        $.get('/item/' + id, function(response) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(response, 'text/html');
+            // 根据 Item.html 结构提取内容
+            const content = doc.querySelector('main.container');
+            
+            if (content) {
+                container.innerHTML = content.innerHTML;
+                
+                // 重新加载 item.js 以激活交互
+                $.getScript("/assets/user/controller/index/item.js");
+                
+                // 如果页面使用了 layui，重新渲染表单
+                if (typeof layui !== 'undefined') {
+                    layui.use(['layer', 'form'], function(){ 
+                        var form = layui.form; 
+                        form.render(); 
+                    });
+                }
+            } else {
+                container.innerHTML = '<div class="alert alert-danger">加载失败，内容格式错误</div>';
+            }
+        }).fail(function() {
+            container.innerHTML = '<div class="alert alert-danger">加载失败，请检查网络</div>';
+        });
+    }
+</script>
 #{ready("/assets/user/controller/index/index.js")}
 #{include file="./Footer.html"}

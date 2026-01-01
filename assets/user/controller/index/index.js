@@ -13,7 +13,8 @@
 
         data.forEach(item => {
             const isSoldOut = item.stock == 0;
-            $ItemList.append(`<a href="${!isSoldOut ? `/item/${item.id}` : `javascript:void(0);`}" class="col-12 col-md-6 col-lg-3 mb-3" data-id="${item.id}">
+            // 修改：使用 javascript:void(0) 并绑定 onclick 事件，或者直接在这里调用 openItem
+            $ItemList.append(`<a href="javascript:void(0);" onclick="${!isSoldOut ? `openItem(${item.id})` : ``}" class="col-12 col-md-6 col-lg-3 mb-3" data-id="${item.id}">
           <div class="acg-card ${isSoldOut ? `soldout` : ``} h-100">
             <div class="acg-thumb" style="background: url('${item.cover}') center/cover no-repeat;"></div>
             <div class="p-3">
