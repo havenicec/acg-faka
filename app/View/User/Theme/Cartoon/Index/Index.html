@@ -1,8 +1,8 @@
 #{include file="./Header.html"}
 <main class="container py-5 d-flex justify-content-center">
-    <div class="main-card-layout shadow-lg d-flex w-100 bg-white" style="max-width: 1400px; min-height: 800px; border-radius: 32px; overflow: hidden;">
+    <div class="main-card-layout cartoon-layout shadow-lg d-flex w-100 bg-white">
         <!-- 左侧边栏 (固定) -->
-        <div class="sidebar-section d-flex flex-column align-items-center justify-content-center text-center p-5" style="width: 380px; min-width: 380px; flex-shrink: 0; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); position: relative; z-index: 1;">
+        <div class="sidebar-section cartoon-sidebar d-flex flex-column align-items-center justify-content-center text-center p-5">
             
             <div style="flex-grow: 1;"></div> <!-- 顶部弹簧 -->
 
@@ -29,14 +29,14 @@
             </div>
             
             <!-- 二次元风格背景装饰 -->
-            <div style="position: absolute; top: -60px; left: -60px; width: 240px; height: 240px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; pointer-events: none;"></div>
-            <div style="position: absolute; bottom: 80px; right: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; pointer-events: none;"></div>
-            <div style="position: absolute; top: 20%; right: 10%; font-size: 24px; color: rgba(255,255,255,0.2); pointer-events: none;"><i class="fa-solid fa-star"></i></div>
-            <div style="position: absolute; bottom: 30%; left: 15%; font-size: 18px; color: rgba(255,255,255,0.15); pointer-events: none;"><i class="fa-solid fa-heart"></i></div>
+            <div class="cartoon-decorative" style="top: -60px; left: -60px; width: 240px; height: 240px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;"></div>
+            <div class="cartoon-decorative" style="bottom: 80px; right: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;"></div>
+            <div class="cartoon-decorative" style="top: 20%; right: 10%; font-size: 24px; color: rgba(255,255,255,0.2);"><i class="fa-solid fa-star"></i></div>
+            <div class="cartoon-decorative" style="bottom: 30%; left: 15%; font-size: 18px; color: rgba(255,255,255,0.15);"><i class="fa-solid fa-heart"></i></div>
         </div>
 
         <!-- 右侧内容区 (可切换) -->
-        <div class="content-section flex-grow-1 p-5 bg-white position-relative d-flex flex-column" style="border-radius: 32px 0 0 32px; margin-left: -20px; z-index: 2; box-shadow: -10px 0 30px rgba(0,0,0,0.05); min-height: 800px; width: 100%;">
+        <div class="content-section cartoon-content flex-grow-1 p-5 bg-white d-flex flex-column">
             
             <!-- 视图1: 购买商品 (默认显示) -->
             <div id="view-purchase" class="content-view h-100 d-flex flex-column">
@@ -213,18 +213,30 @@
             const doc = parser.parseFromString(response, 'text/html');
             // 根据 Item.html 结构提取内容
             const content = doc.querySelector('main.container');
-            
+
             if (content) {
                 container.innerHTML = content.innerHTML;
-                
+
+                // 提取并执行页面中的变量设置脚本 (setVar)
+                const scripts = doc.querySelectorAll('script');
+                scripts.forEach(function(script) {
+                    if (script.textContent && script.textContent.indexOf('setVar') !== -1) {
+                        try {
+                            eval(script.textContent);
+                        } catch (e) {
+                            console.error('Failed to execute setVar script:', e);
+                        }
+                    }
+                });
+
                 // 重新加载 item.js 以激活交互
                 $.getScript("/assets/user/controller/index/item.js");
-                
+
                 // 如果页面使用了 layui，重新渲染表单
                 if (typeof layui !== 'undefined') {
-                    layui.use(['layer', 'form'], function(){ 
-                        var form = layui.form; 
-                        form.render(); 
+                    layui.use(['layer', 'form'], function(){
+                        var form = layui.form;
+                        form.render();
                     });
                 }
             } else {
