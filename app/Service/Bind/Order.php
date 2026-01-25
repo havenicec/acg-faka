@@ -668,6 +668,9 @@ class Order implements \App\Service\Order
             }
 
             $secret = null;
+            $url = $owner == 0
+                ? $clientDomain . '/user/index/query?tradeNo=' . $order->trade_no
+                : $clientDomain . '/user/personal/purchaseRecord?tradeNo=' . $order->trade_no;
 
             hook(Hook::USER_API_ORDER_TRADE_PAY_BEGIN, $commodity, $order, $pay);
 
