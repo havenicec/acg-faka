@@ -88,25 +88,61 @@
             </div>
 
             <!-- 视图2: 订单查询 (默认隐藏) -->
-            <div id="view-query" class="content-view h-100" style="display: none;">
-                <div class="d-flex align-items-center mb-5 pb-3 border-bottom border-light">
+            <div id="view-query" class="content-view flex-column" style="display: none; overflow-y: auto;">
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-light flex-shrink-0">
                     <h2 class="fw-bold mb-0 text-dark">查询<span class="text-primary">订单</span></h2>
                     <span class="badge bg-warning-subtle text-warning ms-3 rounded-pill px-3 py-2">Query</span>
                 </div>
 
-                <div class="query-container py-5 d-flex flex-column align-items-center justify-content-center h-75">
-                    <div class="text-center w-100" style="max-width: 600px;">
-                        <h4 class="mb-4 text-muted fw-normal">请输入您的订单号或联系方式查询</h4>
-                        <form class="order-query-form mb-5">
-                            <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border p-1 bg-white">
-                                <input type="text" class="form-control border-0 ps-4 fs-5" name="keywords" value="#{$tradeNo}" placeholder="订单号 / 联系方式" style="box-shadow: none;">
-                                <button type="button" class="btn btn-primary px-5 fw-bold rounded-pill btn-search-query m-1">查询</button>
+                <!-- 搜索框区域 -->
+                <div class="query-search-area flex-shrink-0 mb-4">
+                    <div class="query-search-box">
+                        <div class="query-icon">
+                            <i class="fa-duotone fa-regular fa-magnifying-glass"></i>
+                        </div>
+                        <h4 class="query-title">订单查询</h4>
+                        <p class="query-subtitle">输入订单号或联系方式，快速查询您的订单状态</p>
+                        <form class="order-query-form">
+                            <div class="query-input-wrapper">
+                                <input type="text" class="query-input" name="keywords" value="#{$tradeNo}" placeholder="订单号 / 邮箱 / 手机号">
+                                <button type="submit" class="query-btn">
+                                    <i class="fa-duotone fa-regular fa-arrow-right me-2"></i>查询
+                                </button>
                             </div>
                         </form>
+                        <div class="query-tips">
+                            <span><i class="fa-duotone fa-regular fa-circle-info me-1"></i>支持18位订单号、邮箱或手机号查询</span>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- 查询结果容器 (初始为空) -->
-                    <div class="order-results w-100"></div>
+                <!-- 加载状态 -->
+                <div class="loading-state w-100 flex-grow-1" style="display: none;">
+                    <div class="query-loading-box">
+                        <div class="loading-spinner">
+                            <i class="fa-duotone fa-regular fa-spinner-third icon-spin"></i>
+                        </div>
+                        <p>正在查询订单信息...</p>
+                    </div>
+                </div>
+
+                <!-- 查询结果容器 -->
+                <div class="order-results w-100 flex-grow-1" style="display: none;">
+                    <div class="results-header">
+                        <span class="results-title"><i class="fa-duotone fa-regular fa-clipboard-list me-2"></i>查询结果</span>
+                    </div>
+                    <div class="order-list"></div>
+                </div>
+
+                <!-- 无结果提示 -->
+                <div class="no-results w-100 flex-grow-1" style="display: none;">
+                    <div class="query-empty-box">
+                        <div class="empty-icon">
+                            <i class="fa-duotone fa-regular fa-box-open"></i>
+                        </div>
+                        <h5>未找到相关订单</h5>
+                        <p>请检查输入信息是否正确，或联系客服协助查询</p>
+                    </div>
                 </div>
             </div>
 
@@ -248,4 +284,5 @@
     }
 </script>
 #{ready("/assets/user/controller/index/index.js")}
+#{ready("/assets/user/controller/index/query.js")}
 #{include file="./Footer.html"}
